@@ -1,5 +1,5 @@
 <%@ page import="java.util.*,java.text.*"
-	contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
+	contentType="text/html; charset=UTF_8" pageEncoding="UTF-8"%>
 
 <style>
 div#nav-container {

@@ -28,8 +28,9 @@ public class Avocats extends HttpServlet {
 				dispatcher.forward(request, response);
 			} else {
 				session.setAttribute("etat", new Integer(JudiciaireConstantes.CONNECTE));
-				GestionJudiciaire gJudiciaire = (GestionJudiciaire) session.getAttribute("gJudiciaire");
-				request.setAttribute("lstAvocat", gJudiciaire.getGestionAvocat().getAvocats());
+				GestionJudiciaire gJudiciaireR = (GestionJudiciaire) session.getAttribute("gJudiciaireR");
+				GestionJudiciaire gJudiciaireW = (GestionJudiciaire) session.getAttribute("gJudiciaireW");
+				request.setAttribute("lstAvocat", gJudiciaireR.getGestionAvocat().getAvocats());
 				
 				if (request.getParameter("id") != null) {
 					int id;
@@ -54,8 +55,11 @@ public class Avocats extends HttpServlet {
 						throw new IFT287Exception("Format de type incorrect");
 					}
 
-					gJudiciaire.getGestionAvocat().ajouterAvocat(id, prenom, nom, type);
-					request.setAttribute("lstAvocat", gJudiciaire.getGestionAvocat().getAvocats());
+					synchronized (gJudiciaireW) {
+						gJudiciaireW.getGestionAvocat().ajouterAvocat(id, prenom, nom, type);	
+					}
+					
+					request.setAttribute("lstAvocat", gJudiciaireR.getGestionAvocat().getAvocats());
 				}
 
 				// transfert de la requête à la page JSP pour affichage

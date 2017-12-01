@@ -51,7 +51,7 @@ public class Process {
 			ArrayList<Jury> lstJurys = new ArrayList<Jury>(); 
 			if( r.getBoolean(3))
 				lstJurys = jurys.selectAllByProces(idProces);
-			return new Proces(r.getInt(1),juge,poursuite, defense, r.getDate(2), lstSeances, r.getBoolean(4), r.getBoolean(3),lstJurys,  r.getString(9));
+			return new Proces(r.getInt(1),juge,poursuite, defense, r.getDate(2), lstSeances, r.getBoolean(4), r.getBoolean(3),lstJurys,  r.getInt(7));
 			
 		}
 		else 
@@ -77,7 +77,7 @@ public class Process {
 	public void terminerProces(Proces proces) throws SQLException {
 		PreparedStatement s =  cx.getConnection().prepareStatement("UPDATE proces SET complet = ?, id_decision = ? WHERE id = ?");
 		s.setBoolean(1, true);
-		if(proces.getId_decision() == "innocent")
+		if(proces.getDecision() == 0)
 			s.setInt(2, 0);
 		else
 			s.setInt(2, 1);
@@ -106,7 +106,7 @@ public class Process {
 		boolean devantJury = false;
 		Date dateDebut = null;
 		boolean complet = false;
-		String decision = "";
+		int decision = 0;
 		
 		while (rs.next()) { 
 			juge = new Juge(rs.getInt("jid"), rs.getString("jprenom"), rs.getString("jnom"), rs.getInt("jage"), rs.getBoolean("jactif"));
@@ -118,7 +118,7 @@ public class Process {
 			devantJury = rs.getBoolean("pjury");	
 			dateDebut = rs.getDate("pdate");
 			complet = rs.getBoolean("pcomplet");
-			decision = rs.getString("ddecision");
+			decision = rs.getInt("ddecision");
 		}
 		
 		proces.setJuge(juge);
@@ -212,8 +212,8 @@ public class Process {
 		
 		ArrayList<Proces> lstProces = new ArrayList<Proces>();
 		while (r.next()) {
-			lstProces.add(new Proces(r.getInt(1), juges.selectOne(r.getInt(8)), 
-					r.getDate(2), r.getBoolean(3), parties.selectOne(r.getInt(5)), parties.selectOne(r.getInt(5))));
+			lstProces.add(new Proces(r.getInt(1), juges.selectOne(r.getInt(8)), parties.selectOne(r.getInt(5)), parties.selectOne(r.getInt(5)),
+					r.getDate(2), seances.selectAll(r.getInt(1)), r.getBoolean(4), r.getBoolean(3), jurys.selectAllByProces(r.getInt(1)), r.getInt(7)));			
 		}
 		return lstProces;
 	}

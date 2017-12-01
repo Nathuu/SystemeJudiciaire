@@ -21,12 +21,12 @@
 		</div>
 		<div class="row">
 			<div class="col-xs-6">
-				<label for="date_debut">Date Debut</label> <input name="date_debut" type="text" />
+				<label for="date_debut">Date Debut</label> <input name="date_debut" type="text" placeholder="AAAA-MM-DD"/>
 			</div>
 			<div class="col-xs-6">
 				<label for="devant_jury">Devant jury</label>
 				<div class="select-wrap">
-					<select name="type">
+					<select name="devant_jury">
 						<option value="1" selected="selected">Avec Jury</option>
 						<option value="0">Juge seulement</option>
 					</select>

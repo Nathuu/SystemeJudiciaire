@@ -69,7 +69,7 @@ caption {
 	font-weight:bold;
 }
 
-input, div.select-wrap {
+div.select-wrap {
 	display: inline-block;
 	width: 200px;
 }

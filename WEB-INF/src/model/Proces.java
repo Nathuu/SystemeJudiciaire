@@ -14,14 +14,14 @@ public class Proces {
 	private boolean complet;
 	private boolean devantJury;
 	private ArrayList<Jury> jurys;
-	private String decision;
+	private int decision;
 	//pour jsp, listes dynamiques - plus simple mais surement mieux a faire!
 	private int id_poursuite;
 	private int id_defense;
 	private int id_juge;
 
 	public Proces(int id, Juge juge, Partie poursuite, Partie defense, Date debut, ArrayList<Seance> seances, boolean complet,
-			boolean devantJury, ArrayList<Jury> jurys, String decision) {
+			boolean devantJury, ArrayList<Jury> jurys, int decision) {
 		super();
 		this.id = id;
 		this.juge = juge;
@@ -32,7 +32,8 @@ public class Proces {
 		this.complet = complet;
 		this.devantJury = devantJury;		
 		this.jurys = jurys;
-		
+		this.decision = decision;
+
 		//pour jsp, listes dynamiques
 		id_poursuite = poursuite.getId();
 		id_defense = defense.getId();
@@ -133,11 +134,11 @@ public class Proces {
 		this.seances = seances;
 	}
 
-	public String getId_decision() {
+	public int getDecision() {
 		return decision;
 	}
 
-	public void setDecision(String decision) {
+	public void setDecision(int decision) {
 		this.decision = decision;
 	}
 

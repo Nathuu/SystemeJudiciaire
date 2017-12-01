@@ -32,23 +32,25 @@ public class Proces extends HttpServlet {
 
 			else {
 				session.setAttribute("etat", new Integer(JudiciaireConstantes.CONNECTE));
-				GestionJudiciaire gJudiciaire = (GestionJudiciaire) session.getAttribute("gJudiciaire");
+				GestionJudiciaire gJudiciaireR = (GestionJudiciaire) session.getAttribute("gJudiciaireR");
+				GestionJudiciaire gJudiciaireW = (GestionJudiciaire) session.getAttribute("gJudiciaireW");
 				
-				request.setAttribute("lstJugesActifs", gJudiciaire.getGestionJuge().getJugesActifs());
-				request.setAttribute("lstProces", gJudiciaire.getGestionProces().getProces());
-				request.setAttribute("lstJurys", gJudiciaire.getGestionJury().getJurys());
-				request.setAttribute("lstParties", gJudiciaire.getGestionPartie().getParties());
+				request.setAttribute("lstJugesActifs", gJudiciaireR.getGestionJuge().getJugesActifs());
+				request.setAttribute("lstProces", gJudiciaireR.getGestionProces().getProces());
+				request.setAttribute("lstJurys", gJudiciaireR.getGestionJury().getJurys());
+				request.setAttribute("lstParties", gJudiciaireR.getGestionPartie().getParties());
 
 				
 				// TODO: for now always checking idProces1... will want a
 				// dropbown of proces ID and matching that selection
-				request.setAttribute("lstSeance", gJudiciaire.getGestionProces().getSeances(1));
+				request.setAttribute("lstSeance", gJudiciaireR.getGestionProces().getSeances(1));
 				
 				//this is idJudge from frmJudge
 				if (request.getParameter("id") != null) {
 					int idProces;
 					int id_juge;
 					String dateInitiale;
+					Date dateSql;
 					int devant_jury;
 					int id_defense;
 					int id_poursuite;
@@ -63,10 +65,20 @@ public class Proces extends HttpServlet {
 						 throw new IFT287Exception("ID proces, ID poursuite/Defense, ID juge et devant jury doivent être des entiers");
 
 					}
-					dateInitiale = request.getParameter("date_debut");
 					
-					gJudiciaire.getGestionProces().creerProces(idProces, id_juge, java.sql.Date.valueOf(dateInitiale), devant_jury==1, id_defense, id_poursuite);
-					request.setAttribute("lstProces", gJudiciaire.getGestionProces().getProces());
+					try {
+						dateInitiale = request.getParameter("date_debut");
+						dateSql = java.sql.Date.valueOf(dateInitiale);
+					} catch (Exception e) {
+						 throw new IFT287Exception("La date doit être formattée aaaa-mm-dd");
+
+					}
+					
+					synchronized (gJudiciaireW) {
+						gJudiciaireW.getGestionProces().creerProces(idProces, id_juge, dateSql, devant_jury==1, id_defense, id_poursuite);
+						request.setAttribute("lstProces", gJudiciaireR.getGestionProces().getProces());	
+					}
+					
 
 				} else if (request.getParameter("idSeance") != null) {
 					int idSeance;
@@ -77,24 +89,43 @@ public class Proces extends HttpServlet {
 						id_proces = Integer.parseInt(request.getParameter("id_proces"));
 						idSeance = Integer.parseInt(request.getParameter("idSeance"));
 					} catch (NumberFormatException e) {
-						 throw new IFT287Exception("ID seance doit etre un entier");
+						throw new IFT287Exception("ID seance doit etre un entier");
 
 					}
 					strDate = request.getParameter("date");
-					gJudiciaire.getGestionProces().ajouterSeance(idSeance, id_proces, java.sql.Date.valueOf(strDate));
-					request.setAttribute("lstSeance", gJudiciaire.getGestionProces().getSeances(1));
+					synchronized (gJudiciaireW) {
+						gJudiciaireW.getGestionProces().ajouterSeance(idSeance, id_proces,
+								java.sql.Date.valueOf(strDate));
+					}
+
+					request.setAttribute("lstSeance", gJudiciaireR.getGestionProces().getSeances(1));
 
 				}
-				
+
 				else if (request.getParameter("supprimer_session") != null) {
 					try {
-						gJudiciaire.getGestionProces().supprimerSeance((Integer.parseInt(request.getParameter("supprimer_session"))));
-						request.setAttribute("lstSeance", gJudiciaire.getGestionProces().getSeances(1));
+						synchronized (gJudiciaireW) {
+							gJudiciaireW.getGestionProces()
+							.supprimerSeance((Integer.parseInt(request.getParameter("supprimer_session"))));
+							request.setAttribute("lstSeance", gJudiciaireR.getGestionProces().getSeances(1));
+						}
 					} catch (NumberFormatException e) {
 						throw new IFT287Exception("Format de id incorrect");
 					}
+					}
+				
+				else if (request.getParameter("terminer_proces") != null) {
+					try {
+						synchronized (gJudiciaireW) {
+							gJudiciaireW.getGestionProces()
+							.terminerProces(Integer.parseInt(request.getParameter("terminer_proces")), Integer.parseInt(request.getParameter("decision")));
+							request.setAttribute("lstProces", gJudiciaireR.getGestionProces().getProces());
 
-				}
+						}
+					} catch (NumberFormatException e) {
+						throw new IFT287Exception("Format de id incorrect");
+					}
+					}
 
 				// transfert de la requête à la page JSP pour affichage
 				RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/proces.jsp");

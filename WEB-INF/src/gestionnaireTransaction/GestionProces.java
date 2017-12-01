@@ -196,7 +196,7 @@ public class GestionProces {
 			Proces proces = process.selectOne(idProces);
 			if(proces == null) throw new IFT287Exception("Ce procès n'existe pas");			
 			proces.setComplet(true);
-			proces.setDecision("");
+			proces.setDecision(decision);
 			process.terminerProces(proces);
 			
 			for (Jury jury : proces.getJurys()) {

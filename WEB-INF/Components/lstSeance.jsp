@@ -1,6 +1,6 @@
 
 <%@ page import="java.util.*,java.text.*"
-	contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
+	contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page isELIgnored="false" %> 
@@ -21,7 +21,6 @@
 				<td>${seance.date}</td>
 				<td>${seance.idProces}</td>
 				<td>
-			<!--TODO:voir a quelle action lier.. celle de proces? -->
 					<form action="Proces" method="get">
 						<input class="btn_black" type="submit" value="supprimer_session" />
 						<input type="hidden" name="supprimer_session" value="${seance.id}">
