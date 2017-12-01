@@ -55,17 +55,14 @@ public class Login extends HttpServlet
                  * en mode serialisable, pour les transactions
                  */
                 System.out.println("Login: session id=" + session.getId());
-                GestionJudiciaire gJudiciaire = new GestionJudiciaire(serveur, bd, userId, motDePasse);                
-                gJudiciaire.getConnexion().setIsolationReadCommited();
-                session.setAttribute("gJudiciaire", gJudiciaire);
+                GestionJudiciaire gJudiciaireW = new GestionJudiciaire(serveur, bd, userId, motDePasse);
+                GestionJudiciaire gJudiciaireR = new GestionJudiciaire(serveur, bd, userId, motDePasse);
+                gJudiciaireR.getConnexion().setIsolationReadCommited();
                 
-                // TODO Do we need this?
-                //GestionBibliotheque biblioUpdate = new GestionBibliotheque(serveur, bd, userId, motDePasse);
-                //session.setAttribute("biblioUpdate", biblioUpdate);
-                //biblioInterrogation
+                session.setAttribute("gJudiciaireR", gJudiciaireR);
+                session.setAttribute("gJudiciaireW", gJudiciaireW);                
+                
                 response.sendRedirect(request.getContextPath() + "/Acceuil");
-//                RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/acceuil.jsp");
-//                dispatcher.forward(request, response);
                 session.setAttribute("etat", new Integer(JudiciaireConstantes.CONNECTE));
             }
             else

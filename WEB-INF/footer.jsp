@@ -1,6 +1,6 @@
 
 <%@ page import="java.util.*,java.text.*"
-	contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
+	contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
 <style>
 div#footer {	
@@ -18,5 +18,5 @@ div#footer p {
 </style>
 
 <div id="footer">
-	<p>©Tous droits réservés Judicieux Inc 2017</p>
+	<p>Â©Tous droits rÃ©servÃ©s Judicieux Inc 2017</p>
 </div>

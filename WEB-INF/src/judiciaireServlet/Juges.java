@@ -28,8 +28,9 @@ public class Juges extends HttpServlet {
 				dispatcher.forward(request, response);
 			} else {
 				session.setAttribute("etat", new Integer(JudiciaireConstantes.CONNECTE));
-				GestionJudiciaire gJudiciaire = (GestionJudiciaire) session.getAttribute("gJudiciaire");
-				request.setAttribute("lstJuge", gJudiciaire.getGestionJuge().getJuges());
+				GestionJudiciaire gJudiciaireR = (GestionJudiciaire) session.getAttribute("gJudiciaireR");
+				GestionJudiciaire gJudiciaireW = (GestionJudiciaire) session.getAttribute("gJudiciaireW");
+				request.setAttribute("lstJuge", gJudiciaireR.getGestionJuge().getJuges());
 
 				if (request.getParameter("id") != null) {
 					int id;
@@ -51,17 +52,22 @@ public class Juges extends HttpServlet {
 					} catch (NumberFormatException e) {
 						throw new IFT287Exception("Format d'age incorrect");
 					}
-
-					gJudiciaire.getGestionJuge().ajouterJuge(id, prenom, nom, age);
-					request.setAttribute("lstJuge", gJudiciaire.getGestionJuge().getJuges());
+					synchronized (gJudiciaireW) {
+						gJudiciaireW.getGestionJuge().ajouterJuge(id, prenom, nom, age);
+						request.setAttribute("lstJuge", gJudiciaireR.getGestionJuge().getJuges());
+					}
+					
 				}
 
 				// TODO idéalement faudrait qu'on s'assure que la valeur envoyé change pas entre les
 				// voyages
 				if (request.getParameter("removeJuge") != null) {
 					try {
-						gJudiciaire.getGestionJuge().retirerJuge(Integer.parseInt(request.getParameter("removeJuge")));
-						request.setAttribute("lstJuge", gJudiciaire.getGestionJuge().getJuges());
+						synchronized (gJudiciaireW) {
+							gJudiciaireW.getGestionJuge().retirerJuge(Integer.parseInt(request.getParameter("removeJuge")));
+							request.setAttribute("lstJuge", gJudiciaireR.getGestionJuge().getJuges());
+						}
+						
 					} catch (NumberFormatException e) {
 						throw new IFT287Exception("Format de id incorrect");
 					}

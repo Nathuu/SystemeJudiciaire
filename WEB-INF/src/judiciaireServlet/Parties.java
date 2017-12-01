@@ -28,10 +28,11 @@ public class Parties extends HttpServlet {
 				dispatcher.forward(request, response);
 			} else {
 				session.setAttribute("etat", new Integer(JudiciaireConstantes.CONNECTE));
-				GestionJudiciaire gJudiciaire = (GestionJudiciaire) session.getAttribute("gJudiciaire");
+				GestionJudiciaire gJudiciaireR = (GestionJudiciaire) session.getAttribute("gJudiciaireR");
+				GestionJudiciaire gJudiciaireW = (GestionJudiciaire) session.getAttribute("gJudiciaireW");
 				
-				request.setAttribute("lstAvocat", gJudiciaire.getGestionAvocat().getAvocats());
-				request.setAttribute("lstPartie", gJudiciaire.getGestionPartie().getParties());
+				request.setAttribute("lstAvocat", gJudiciaireR.getGestionAvocat().getAvocats());
+				request.setAttribute("lstPartie", gJudiciaireR.getGestionPartie().getParties());
 								
 				if (request.getParameter("id") != null) {
 					int id;
@@ -54,12 +55,11 @@ public class Parties extends HttpServlet {
 						throw new IFT287Exception("Format de age incorrect");
 					}
 
-					gJudiciaire.getGestionPartie().ajouterPartie(id, prenom, nom, idAvocat);
-					request.setAttribute("lstPartie", gJudiciaire.getGestionPartie().getParties());
+					synchronized (gJudiciaireW) {
+						gJudiciaireW.getGestionPartie().ajouterPartie(id, prenom, nom, idAvocat);
+						request.setAttribute("lstPartie", gJudiciaireR.getGestionPartie().getParties());	
+					}					
 				}
-
-				
-				
 				// transfert de la requête à la page JSP pour affichage
 				RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/parties.jsp");
 				dispatcher.forward(request, response);
