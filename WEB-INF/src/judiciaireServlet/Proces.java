@@ -77,11 +77,23 @@ public class Proces extends HttpServlet {
 						id_proces = Integer.parseInt(request.getParameter("id_proces"));
 						idSeance = Integer.parseInt(request.getParameter("idSeance"));
 					} catch (NumberFormatException e) {
-						 throw new IFT287Exception("ID proces, ID poursuite/Defense, ID juge et devant jury doivent être des entiers");
+						 throw new IFT287Exception("ID seance doit etre un entier");
 
 					}
 					strDate = request.getParameter("date");
 					gJudiciaire.getGestionProces().ajouterSeance(idSeance, id_proces, java.sql.Date.valueOf(strDate));
+					request.setAttribute("lstSeance", gJudiciaire.getGestionProces().getSeances(1));
+
+				}
+				
+				else if (request.getParameter("supprimer_session") != null) {
+					try {
+						gJudiciaire.getGestionProces().supprimerSeance((Integer.parseInt(request.getParameter("supprimer_session"))));
+						request.setAttribute("lstSeance", gJudiciaire.getGestionProces().getSeances(1));
+					} catch (NumberFormatException e) {
+						throw new IFT287Exception("Format de id incorrect");
+					}
+
 				}
 
 				// transfert de la requête à la page JSP pour affichage

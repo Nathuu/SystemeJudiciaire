@@ -101,8 +101,10 @@ public class Jurys {
 	public ArrayList<Jury> selectAllByProces(int idProces) throws SQLException {
 		PreparedStatement s =  cx.getConnection().prepareStatement(""
 				+ "SELECT j.nas, j.prenom, j.nom, j.age, j.actif, j.id_sexe, s.nom "
-				+ "FROM jury AS j "			
-				+ "INNER JOIN sexe AS s ON s.id = j.id_sexe"					
+				+ "FROM jury AS j "	
+				+ "INNER JOIN proces_jury AS pj ON j.nas = pj.id_jury "
+				+ "INNER JOIN proces AS p ON pj.id_proces = p.id "
+				+ "INNER JOIN sexe AS s ON s.id = j.id_sexe "					
 				+ "WHERE p.id = ?");
 		
 		s.setInt(1, idProces);		

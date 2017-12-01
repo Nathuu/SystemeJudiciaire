@@ -13,6 +13,7 @@ import model.Partie;
 import model.Proces;
 import model.Seance;
 import general.Connexion;
+import general.IFT287Exception;
 
 public class Process {
 	
@@ -32,7 +33,7 @@ public class Process {
 		this.cx = cx;
 	}
 	
-	public Proces selectOne(int idProces) throws Exception {
+	public Proces selectOne(int idProces) throws SQLException, IFT287Exception {
 		PreparedStatement s =  cx.getConnection().prepareStatement(""
 				+ "SELECT p.id, p.date_debut, p.devant_jury, p.complet, p.id_poursuite, p.id_defense, p.id_decision, p.id_juge, d.nom "
 				+ "FROM proces AS p "		

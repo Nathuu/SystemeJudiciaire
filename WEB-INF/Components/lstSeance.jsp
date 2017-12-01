@@ -23,7 +23,7 @@
 				<td>
 			<!--TODO:voir a quelle action lier.. celle de proces? -->
 					<form action="Proces" method="get">
-						<input class="btn_black" type="submit" value="Supprimer" />
+						<input class="btn_black" type="submit" value="supprimer_session" />
 						<input type="hidden" name="supprimer_session" value="${seance.id}">
 					</form>
 				</td>

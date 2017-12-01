@@ -21,7 +21,7 @@ public class Proces {
 	private int id_juge;
 
 	public Proces(int id, Juge juge, Partie poursuite, Partie defense, Date debut, ArrayList<Seance> seances, boolean complet,
-			boolean devantJury, ArrayList<Jury> jurys, String decision) throws Exception {
+			boolean devantJury, ArrayList<Jury> jurys, String decision) {
 		super();
 		this.id = id;
 		this.juge = juge;

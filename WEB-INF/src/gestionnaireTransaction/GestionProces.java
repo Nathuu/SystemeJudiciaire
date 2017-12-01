@@ -92,11 +92,10 @@ public class GestionProces {
 	 * @param nas				numero d'assurance social
 	 * @param idProces			l'id du proces a ajouter 
 	 * @param cx 
-	 * @throws SQLException
-	 * @throws IFT287Exception
+	 * @throws Exception 
 	 */
 	public void assignerJury(int nas, int idProces)
-			throws SQLException, IFT287Exception
+			throws Exception
 	{
 		try {
 			Proces proces = process.selectOne(idProces);
@@ -112,6 +111,7 @@ public class GestionProces {
 		}catch(Exception e ) {
 			System.out.println(e);
 			cx.rollback();
+			throw e;
 		}
 	}
 
@@ -123,8 +123,7 @@ public class GestionProces {
 	 * @param idProces
 	 * @param dateSeance
 	 * @param cx 
-	 * @throws SQLException
-	 * @throws IFT287Exception
+	 * @throws Exception 
 	 */
 	public void ajouterSeance(int idSeance, int idProces, Date dateSeance)
 			throws SQLException, IFT287Exception
@@ -143,6 +142,7 @@ public class GestionProces {
 		}catch(Exception e ) {
 			System.out.println(e);
 			cx.rollback();
+			throw e;
 		}
 	}
 
@@ -152,8 +152,7 @@ public class GestionProces {
 	 *     
 	 * @param idSeance			l'id de la seance à supprimer
 	 * @param cx 
-	 * @throws SQLException
-	 * @throws IFT287Exception
+	 * @throws Exception 
 	 */
 	public void supprimerSeance(int idSeance)
 			throws SQLException, IFT287Exception
@@ -174,6 +173,8 @@ public class GestionProces {
 		}catch(Exception e ) {
 			System.out.println(e);
 			cx.rollback();
+			throw e;
+
 		}
 	}
 
@@ -184,8 +185,7 @@ public class GestionProces {
 	 * @param idProces			l'id du proces à terminé
 	 * @param decision			la decision du procès
 	 * @param cx 
-	 * @throws SQLException
-	 * @throws IFT287Exception
+	 * @throws Exception 
 	 */
 	public void terminerProces(int idProces, int decision)
 			throws SQLException, IFT287Exception
@@ -213,7 +213,11 @@ public class GestionProces {
 			}
 			
 			cx.getConnection().commit();
-		}catch(Exception e ) {
+		}catch(SQLException e ) {
+			System.out.println(e);
+			cx.rollback();
+		}
+		catch(IFT287Exception e ) {
 			System.out.println(e);
 			cx.rollback();
 		}
@@ -226,11 +230,10 @@ public class GestionProces {
 	 *  
 	 * @param idProces
 	 * @param cx 
-	 * @throws SQLException
-	 * @throws IFT287Exception
+	 * @throws Exception 
 	 */
 	public void afficherProces(int idProces)
-			throws SQLException, IFT287Exception
+			throws Exception
 	{
 		try {
 			Proces proces = process.selectOne(idProces); 	
@@ -239,7 +242,9 @@ public class GestionProces {
 			
 		}catch(Exception e ) {
 			System.out.println(e);
-			cx.rollback();		
+			cx.rollback();
+			throw e;
+
 		}
 	}
 
