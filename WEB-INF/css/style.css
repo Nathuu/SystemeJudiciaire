@@ -1,0 +1,80 @@
+@charset "ISO-8859-1";
+
+html, body, div#main-panel {
+	height: 100%;
+}
+
+div#inline-left{
+	float: left;
+}
+
+.container-inline {
+  display: flex;
+}
+.container-inline > div {
+  flex: 1; /*grow*/
+}
+
+div.panel {
+	border: 1px solid black;
+	padding: 10px;
+	margin: 10px;
+	width: auto;
+	display: inline-block;
+	border-radius: 5px;
+}
+
+table {
+	border-radius: 5px;
+	border-collapse: collapse;
+	border: solid 2px black;
+}
+
+table th {
+	background-color: #111111;
+	color: white;
+}
+
+table td, table th {
+	border: solid 1px black;
+	border-collapse: collapse;
+	padding: 10px;
+	width: 75px;
+	font-size: 18px;
+}
+
+.btn_black {
+	background-color: black;
+	color: white;
+}
+
+div.row {
+	width: 100%;
+	padding-top: 10px;
+}
+
+div.col-xs-6 {
+	width: 50%;
+	display: inline;
+	padding: 5px;
+}
+
+label {
+	width: 100px;
+	display: inline-block;
+}
+
+caption {
+	font-size:2em;
+	font-weight:bold;
+}
+
+input, div.select-wrap {
+	display: inline-block;
+	width: 200px;
+}
+
+legend {
+	margin:0 auto;
+}
+
