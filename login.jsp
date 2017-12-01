@@ -2,7 +2,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <HTML>
 <HEAD>
-<TITLE>IFT287 - Système de gestion de bibliothèque</TITLE>
+<TITLE>IFT287 - Système de gestion juridique</TITLE>
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=ISO-8859-1">
 <META NAME="author" CONTENT="Marc Dupuis">
 <META NAME="description"

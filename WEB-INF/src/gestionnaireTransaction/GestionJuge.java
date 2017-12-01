@@ -1,5 +1,7 @@
 package gestionnaireTransaction;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -101,4 +103,14 @@ public class GestionJuge {
 	public ArrayList<Juge> getJuges() throws SQLException {		
 		return juges.getJuges();
 	}
+	public ArrayList<Juge> getJugesActifs() throws SQLException {		
+		return juges.getJugesActifs();
+	}
+	
+	
+	
+	public Juge selectOne(int id) throws SQLException {
+		return juges.selectOne(id);
+	}
+	
 }

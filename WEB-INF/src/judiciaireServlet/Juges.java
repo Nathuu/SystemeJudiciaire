@@ -61,9 +61,11 @@ public class Juges extends HttpServlet {
 				if (request.getParameter("removeJuge") != null) {
 					try {
 						gJudiciaire.getGestionJuge().retirerJuge(Integer.parseInt(request.getParameter("removeJuge")));
+						request.setAttribute("lstJuge", gJudiciaire.getGestionJuge().getJuges());
 					} catch (NumberFormatException e) {
 						throw new IFT287Exception("Format de id incorrect");
 					}
+
 				}
 				
 				// transfert de la requête à la page JSP pour affichage

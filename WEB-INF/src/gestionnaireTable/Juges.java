@@ -80,7 +80,17 @@ public class Juges {
 		while (r.next()) {
 			lstJuge.add(new Juge(r.getInt(1), r.getString(2), r.getString(3), r.getInt(4), r.getBoolean(5)));
 		}
-		
+		return lstJuge;
+	}
+	
+	public ArrayList<Juge> getJugesActifs() throws SQLException {
+		PreparedStatement s =  cx.getConnection().prepareStatement("SELECT * FROM juge WHERE actif = ? ");
+		s.setBoolean(1, true);		
+		ResultSet r = s.executeQuery();	
+		ArrayList<Juge> lstJuge = new ArrayList<Juge>();
+		while (r.next()) {
+			lstJuge.add(new Juge(r.getInt(1), r.getString(2), r.getString(3), r.getInt(4), r.getBoolean(5)));
+		}
 		return lstJuge;
 	}
 

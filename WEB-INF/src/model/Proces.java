@@ -15,10 +15,10 @@ public class Proces {
 	private boolean devantJury;
 	private ArrayList<Jury> jurys;
 	private String decision;
-	//pour jsp, listes dynamiques
-	private int id_poursuite=0;
-	private int id_defense=0;
-	private int id_juge=0;
+	//pour jsp, listes dynamiques - plus simple mais surement mieux a faire!
+	private int id_poursuite;
+	private int id_defense;
+	private int id_juge;
 
 	public Proces(int id, Juge juge, Partie poursuite, Partie defense, Date debut, ArrayList<Seance> seances, boolean complet,
 			boolean devantJury, ArrayList<Jury> jurys, String decision) throws Exception {
