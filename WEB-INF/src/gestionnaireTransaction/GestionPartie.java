@@ -26,17 +26,17 @@ public class GestionPartie {
 
 	// — ajouterPartie <idPartie> <prenom> <nom> <idAvocat>
 	/**
-	 * Permet d’ajouter une personne participant à un procès comme défendeur ou
+	 * Permet d’ajouter une personne participant à un procès comme d�fendeur ou
 	 * poursuivant.
 	 * 
 	 * @param idParti
-	 *            l'id du parti que l'on souhaite ajouté au proces
+	 *            l'id du parti que l'on souhaite ajout� au proces
 	 * @param prenom
 	 *            le prenom du partie que l'on souhait rajouter
 	 * @param nom
 	 *            le nom du partie que
 	 * @param idAvocat
-	 *            l'id de l'avocat créée
+	 *            l'id de l'avocat cr��e
 	 * @param cx
 	 * @throws SQLException
 	 * @throws IFT287Exception
@@ -70,4 +70,5 @@ public class GestionPartie {
 	public ArrayList<Partie> getParties() throws SQLException {
 		return parties.getParties(); 
 	}
+
 }

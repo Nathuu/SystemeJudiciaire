@@ -16,7 +16,6 @@ import javax.servlet.http.HttpSession;
 import general.IFT287Exception;
 import gestionnaireTransaction.GestionJudiciaire;
 
-
 public class Proces extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
@@ -34,18 +33,17 @@ public class Proces extends HttpServlet {
 				session.setAttribute("etat", new Integer(JudiciaireConstantes.CONNECTE));
 				GestionJudiciaire gJudiciaireR = (GestionJudiciaire) session.getAttribute("gJudiciaireR");
 				GestionJudiciaire gJudiciaireW = (GestionJudiciaire) session.getAttribute("gJudiciaireW");
-				
+
 				request.setAttribute("lstJugesActifs", gJudiciaireR.getGestionJuge().getJugesActifs());
 				request.setAttribute("lstProces", gJudiciaireR.getGestionProces().getProces());
 				request.setAttribute("lstJurys", gJudiciaireR.getGestionJury().getJurys());
 				request.setAttribute("lstParties", gJudiciaireR.getGestionPartie().getParties());
+				request.setAttribute("pageAction", "Proces");
+				request.setAttribute("multiple", true);
 
-				
-				// TODO: for now always checking idProces1... will want a
-				// dropbown of proces ID and matching that selection
-				request.setAttribute("lstSeance", gJudiciaireR.getGestionProces().getSeances(1));
-				
-				//this is idJudge from frmJudge
+				request.setAttribute("lstSeance", gJudiciaireR.getGestionProces().getSeances(-1));
+
+				// this is idJudge from frmJudge
 				if (request.getParameter("id") != null) {
 					int idProces;
 					int id_juge;
@@ -62,23 +60,24 @@ public class Proces extends HttpServlet {
 						id_defense = Integer.parseInt(request.getParameter("id_defense"));
 						id_poursuite = Integer.parseInt(request.getParameter("id_poursuite"));
 					} catch (NumberFormatException e) {
-						 throw new IFT287Exception("ID proces, ID poursuite/Defense, ID juge et devant jury doivent être des entiers");
+						throw new IFT287Exception(
+								"ID proces, ID poursuite/Defense, ID juge et devant jury doivent être des entiers");
 
 					}
-					
+
 					try {
 						dateInitiale = request.getParameter("date_debut");
 						dateSql = java.sql.Date.valueOf(dateInitiale);
 					} catch (Exception e) {
-						 throw new IFT287Exception("La date doit être formattée aaaa-mm-dd");
+						throw new IFT287Exception("La date doit être formattée aaaa-mm-dd");
 
 					}
-					
+
 					synchronized (gJudiciaireW) {
-						gJudiciaireW.getGestionProces().creerProces(idProces, id_juge, dateSql, devant_jury==1, id_defense, id_poursuite);
-						request.setAttribute("lstProces", gJudiciaireR.getGestionProces().getProces());	
+						gJudiciaireW.getGestionProces().creerProces(idProces, id_juge, dateSql, devant_jury == 1,
+								id_defense, id_poursuite);
+						request.setAttribute("lstProces", gJudiciaireR.getGestionProces().getProces());
 					}
-					
 
 				} else if (request.getParameter("idSeance") != null) {
 					int idSeance;
@@ -105,27 +104,56 @@ public class Proces extends HttpServlet {
 				else if (request.getParameter("supprimer_session") != null) {
 					try {
 						synchronized (gJudiciaireW) {
-							gJudiciaireW.getGestionProces()
-							.supprimerSeance((Integer.parseInt(request.getParameter("supprimer_session"))));
-							request.setAttribute("lstSeance", gJudiciaireR.getGestionProces().getSeances(1));
+							int idProces = Integer.parseInt(request.getParameter("session_id"));
+							gJudiciaireW.getGestionProces().supprimerSeance(idProces);
+							request.setAttribute("lstSeance", gJudiciaireR.getGestionProces().getSeances(-1));
 						}
 					} catch (NumberFormatException e) {
-						throw new IFT287Exception("Format de id incorrect");
+						throw new IFT287Exception("Session incorrect");
 					}
-					}
-				
+				}
+
 				else if (request.getParameter("terminer_proces") != null) {
 					try {
 						synchronized (gJudiciaireW) {
-							gJudiciaireW.getGestionProces()
-							.terminerProces(Integer.parseInt(request.getParameter("terminer_proces")), Integer.parseInt(request.getParameter("decision")));
+							gJudiciaireW.getGestionProces().terminerProces(
+									Integer.parseInt(request.getParameter("idproces_terminer")),
+									Integer.parseInt(request.getParameter("decision")));
 							request.setAttribute("lstProces", gJudiciaireR.getGestionProces().getProces());
 
 						}
 					} catch (NumberFormatException e) {
 						throw new IFT287Exception("Format de id incorrect");
 					}
+				}
+
+				else if (request.getParameter("afficher_seances") != null) {
+					try {
+						synchronized (gJudiciaireW) {
+							int idProces = Integer.parseInt(request.getParameter("proces_seance"));
+							request.setAttribute("lstSeance",
+									gJudiciaireR.getGestionProces().getSeances(idProces));
+							request.setAttribute("selectedProces",idProces);
+
+						}
+					} catch (NumberFormatException e) {
+						throw new IFT287Exception("Format de seance incorrect");
 					}
+				}
+				else if (request.getParameter("assigner_jury") != null){
+					try {
+						synchronized (gJudiciaireW) {
+							int idJury = Integer.parseInt(request.getParameter("id_jury"));
+							int idProces = Integer.parseInt(request.getParameter("proces_jury"));
+							gJudiciaireW.getGestionProces().assignerJury(idJury, idProces);
+						}
+					} catch (NumberFormatException e) {
+						throw new IFT287Exception("Format de seance incorrect");
+					} catch (IFT287Exception e) {
+						throw e;
+					}
+				}
+				
 
 				// transfert de la requête à la page JSP pour affichage
 				RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/proces.jsp");
@@ -133,12 +161,11 @@ public class Proces extends HttpServlet {
 				session.setAttribute("etat", new Integer(JudiciaireConstantes.MEMBRE_SELECTIONNE));
 
 			}
-		} 
-		catch (SQLException e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
+
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.toString());
-		}
-		 catch (IFT287Exception e) {
+		} catch (IFT287Exception e) {
 			List<String> listeMessageErreur = new LinkedList<String>();
 			listeMessageErreur.add(e.toString());
 			request.setAttribute("listeMessageErreur", listeMessageErreur);

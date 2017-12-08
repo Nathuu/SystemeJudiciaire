@@ -9,9 +9,11 @@
 	<%@ include file="/WEB-INF/css/style.css" %>
 </style>
 </head>
-<jsp:include page="/WEB-INF/header.jsp" />
 <body>
+	<jsp:include page="/WEB-INF/header.jsp" />
+	<jsp:include page="/WEB-INF/messageErreur.jsp" />
 	<div id="main-panel">
+	
 		<h1>Avocats</h1>
 		<div>
 			<jsp:include page="/WEB-INF/Components/lstAvocat.jsp" />
@@ -19,7 +21,7 @@
 		<div>
 			<jsp:include page="/WEB-INF/Components/frmAvocat.jsp" />
 		</div>		
-		<jsp:include page="/WEB-INF/messageErreur.jsp" />
+		
 		<jsp:include page="/WEB-INF/footer.jsp" />
 	</div>	
 </body>

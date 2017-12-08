@@ -33,7 +33,7 @@ public class Parties extends HttpServlet {
 				
 				request.setAttribute("lstAvocat", gJudiciaireR.getGestionAvocat().getAvocats());
 				request.setAttribute("lstPartie", gJudiciaireR.getGestionPartie().getParties());
-								
+	
 				if (request.getParameter("id") != null) {
 					int id;
 					String prenom;

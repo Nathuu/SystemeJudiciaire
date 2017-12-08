@@ -27,11 +27,15 @@ public class Jurys extends HttpServlet {
 				RequestDispatcher dispatcher = request.getRequestDispatcher("/login.jsp");
 				dispatcher.forward(request, response);
 			} else {
+
 				session.setAttribute("etat", new Integer(JudiciaireConstantes.CONNECTE));
 				GestionJudiciaire gJudiciaireR = (GestionJudiciaire) session.getAttribute("gJudiciaireR");
 				GestionJudiciaire gJudiciaireW = (GestionJudiciaire) session.getAttribute("gJudiciaireW");
 				request.setAttribute("lstJurys", gJudiciaireR.getGestionJury().getJurys());
-				
+				request.setAttribute("pageAction", "Jurys");
+				request.setAttribute("multiple", true);
+				request.setAttribute("lstProces", gJudiciaireR.getGestionProces().getProces());
+
 				if (request.getParameter("id") != null) {
 					int id;
 					String prenom;
@@ -61,11 +65,30 @@ public class Jurys extends HttpServlet {
 					}
 				}
 				
+				else if (request.getParameter("assigner_jury") != null){
+					try {
+						synchronized (gJudiciaireW) {
+							int idJury = Integer.parseInt(request.getParameter("id_jury"));
+							int idProces = Integer.parseInt(request.getParameter("proces_jury"));
+							gJudiciaireW.getGestionProces().assignerJury(idJury, idProces);
+							request.setAttribute("lstProces", gJudiciaireR.getGestionProces().getProces());
+							request.setAttribute("lstJurys", gJudiciaireR.getGestionJury().getJurys());
+
+						}
+					} catch (NumberFormatException e) {
+						throw new IFT287Exception("Format de seance incorrect");
+					} catch (IFT287Exception e) {
+						throw e;
+					}
+
+				}
+				
+				request.setAttribute("lstProces", gJudiciaireR.getGestionProces().getProces());
 				// transfert de la requête à la page JSP pour affichage
 				RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jurys.jsp");
 				dispatcher.forward(request, response);
 				session.setAttribute("etat", new Integer(JudiciaireConstantes.MEMBRE_SELECTIONNE));
-			}
+			} 
 		} catch (SQLException e) {
 			e.printStackTrace();
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.toString());

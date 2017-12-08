@@ -23,9 +23,10 @@ img#background-splash {
 <body>
 	<div id="main-panel">
 		<jsp:include page="/WEB-INF/header.jsp" />
+		<jsp:include page="/WEB-INF/messageErreur.jsp" />
 		<h1>Bienvenue dans le système judiciaire</h1>
 		<img id="background-splash" src='res/courtroom.png' alt='[]' />
-		<jsp:include page="/WEB-INF/messageErreur.jsp" />
+		
 		<jsp:include page="/WEB-INF/footer.jsp" />
 	</div>
 </body>

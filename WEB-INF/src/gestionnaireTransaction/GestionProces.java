@@ -42,13 +42,13 @@ public class GestionProces {
 
 	//	â€” creerProces <idProces> <idJuge> <dateInitiale> <devantJury> <idPartieDefenderesse> <idPartiePoursuivante> 
 	/**
-	 * Permet de crÃ©er un nouveau procÃ¨s en indiquant si le procÃ¨s se tient devant jury (1) ou devant un juge seul (0).
+	 * Permet de créer un nouveau procès en indiquant si le procès se tient devant jury (1) ou devant un juge seul (0).
 	 *         
-	 * @param idProces				l'id du proces que l'on souhaite crÃ©er 
-	 * @param idJuge				l'id du juge que l'on souhaite assignÃ©e au procÃ¨s
-	 * @param dateInitiale			la date initiale du procÃ¨s (premiÃ¨re sÃ©eance)
-	 * @param devantJury			Si le procÃ¨s se tient devant un jury 
-	 * @param idPartieDefenderesse	l'id de la partie qui dÃ©fend
+	 * @param idProces				l'id du proces que l'on souhaite créer 
+	 * @param idJuge				l'id du juge que l'on souhaite assignée au procès
+	 * @param dateInitiale			la date initiale du procès (première séeance)
+	 * @param devantJury			Si le procès se tient devant un jury 
+	 * @param idPartieDefenderesse	l'id de la partie qui défend
 	 * @param idPartiePoursuivante	l'id de la partie qui poursuit 
 	 * @param cx 
 	 * @throws SQLException
@@ -59,7 +59,7 @@ public class GestionProces {
 	{
 		try {
 			Date now = new Date(Calendar.getInstance().getTimeInMillis());
-			if(dateInitiale.before(now)) throw new IFT287Exception("La date initiale est passÃ©e");
+			if(dateInitiale.before(now)) throw new IFT287Exception("La date initiale est passée");
 			
 			Juge juge = juges.selectOne(idJuge);
 			if(juge == null) throw new IFT287Exception("Ce juge n'existe pas");
@@ -70,16 +70,18 @@ public class GestionProces {
 			
 			if(defense == null) throw new IFT287Exception("Il n'y a pas de défenes");
 			if(poursuite == null) throw new IFT287Exception("Il n'y a pas de poursuite");
+			if(poursuite.getId() == defense.getId()) throw new IFT287Exception("La poursuite ne peut pas se poursuivre elle-même");
 						
 			Proces proces = new Proces(idProces, juge, dateInitiale, devantJury, defense, poursuite);
 					
-			if(process.exist(proces)) throw new IFT287Exception("Le proces existe dÃ©jÃ ");			
+			if(process.exist(proces)) throw new IFT287Exception("Le proces existe déjà ");			
 			process.creeProces(proces);		
 
 			cx.getConnection().commit();
-		}catch(Exception e ) {
+		}catch(IFT287Exception e ) {
 			System.out.println(e);
 			cx.rollback();
+			throw e;
 		}
 	}
 
@@ -87,19 +89,22 @@ public class GestionProces {
 	
 	//	â€” assignerJury <nas> <idProces> 
 	/**
-	 * Permet dâ€™assigner un jury Ã  un procÃ¨s.
+	 * Permet dâ€™assigner un jury à  un procès.
 	 *     
 	 * @param nas				numero d'assurance social
 	 * @param idProces			l'id du proces a ajouter 
 	 * @param cx 
+	 * @throws SQLException 
 	 * @throws Exception 
 	 */
 	public void assignerJury(int nas, int idProces)
-			throws Exception
+			throws IFT287Exception, SQLException
 	{
 		try {
 			Proces proces = process.selectOne(idProces);
 			if(proces == null) throw new IFT287Exception("Le proces n'existe pas");
+			if(proces.isComplet()) throw new IFT287Exception("Le proces est terminé");
+			if(!proces.isDevantJury()) throw new IFT287Exception("Le proces n'est pas devant un jury");
 			
 			Jury jury = jurys.selectOne(nas);			
 	
@@ -108,7 +113,7 @@ public class GestionProces {
 			jurys.assignerJury(jury, proces);
 			
 			cx.getConnection().commit();
-		}catch(Exception e ) {
+		}catch(IFT287Exception e ) {
 			System.out.println(e);
 			cx.rollback();
 			throw e;
@@ -117,7 +122,7 @@ public class GestionProces {
 
 	//	â€” ajouterSeance <idSeance> <idProces> <dateSeance> 
 	/**
-	 * Permet dâ€™ajouter une sÃ©ance supplÃ©mentaire Ã  un procÃ¨s.
+	 * Permet dâ€™ajouter une séance supplémentaire à  un procès.
 	 *     
 	 * @param idSeance
 	 * @param idProces
@@ -130,12 +135,16 @@ public class GestionProces {
 	{
 		try { 
 			Date now = new Date(Calendar.getInstance().getTimeInMillis());		
-			if(dateSeance.before(now)) throw new IFT287Exception("La date est passÃ©e");
+			if(dateSeance.before(now)) throw new IFT287Exception("La date est passée");
 			Proces proces = process.selectOne(idProces);
+			Date debut_proces = proces.getDebut();
+			if(dateSeance.before(debut_proces)) throw new IFT287Exception("Le procès ne sera pas débuté à cette date");
+
 			if(proces == null) throw new IFT287Exception("Ce proces n'existe pas");			
 			Seance seance = new Seance(idSeance, dateSeance, idProces);
+			if(proces.isComplet()) throw new IFT287Exception("Ce proces est terminé");			
 			
-			if(seances.exist(seance)) throw new IFT287Exception("Cette seance existe dÃ©jÃ ");
+			if(seances.exist(seance)) throw new IFT287Exception("Cette seance existe déjà ");
 			seances.ajouterSeance(seance, proces);
 			
 			cx.getConnection().commit();
@@ -148,9 +157,9 @@ public class GestionProces {
 
 	//	â€” supprimerSeance <idSeance> 
 	/**
-	 * Permet de supprimer une sÃ©ance future Ã  un procÃ¨s non terminÃ©.
+	 * Permet de supprimer une séance future à  un procès non terminé.
 	 *     
-	 * @param idSeance			l'id de la seance Ã  supprimer
+	 * @param idSeance			l'id de la seance à  supprimer
 	 * @param cx 
 	 * @throws Exception 
 	 */
@@ -159,14 +168,14 @@ public class GestionProces {
 	{
 		try {			
 			Seance seance = seances.selectOne(idSeance);
-			if(seance == null) throw new IFT287Exception("Cette sÃ©ance n'exsite pas");
+			if(seance == null) throw new IFT287Exception("Cette séance n'exsite pas");
 			
 			Date now = new Date(Calendar.getInstance().getTimeInMillis());		
-			if(seance.getDate().before(now)) throw new IFT287Exception("La date est passÃ©e");
+			if(seance.getDate().before(now)) throw new IFT287Exception("La date est passée");
 				
 			Proces proces = process.selectOne(seance.getIdProces());
 			if(proces == null) throw new IFT287Exception("Ce proces n'existe pas et la Seance est invalide");
-			if(proces.isComplet()) throw new IFT287Exception("On ne peut retirer une sÃ©ance d'un procÃ¨s terminÃ©");
+			if(proces.isComplet()) throw new IFT287Exception("On ne peut retirer une séance d'un procès terminé");
 			seances.supprimmerSeance(seance);
 			
 			cx.getConnection().commit();
@@ -180,10 +189,10 @@ public class GestionProces {
 
 	//	â€” terminerProces <idProces> <decision> 
 	/**
-	 * Permet dâ€™indiquer quâ€™un procÃ¨s est terminÃ©. Si la poursuite perd, la dÃ©cision est Ã  0, si elle gagne, la dÃ©cision est Ã  1.
+	 * Permet dâ€™indiquer quâ€™un procès est terminé. Si la poursuite perd, la décision est à 0, si elle gagne, la décision est à  1.
 	 *     
-	 * @param idProces			l'id du proces Ã  terminÃ©
-	 * @param decision			la decision du procÃ¨s
+	 * @param idProces			l'id du proces à terminé
+	 * @param decision			la decision du procès
 	 * @param cx 
 	 * @throws Exception 
 	 */
@@ -194,7 +203,7 @@ public class GestionProces {
 			if(decision != 1 && decision != 0) throw new IFT287Exception("Il s'agit d'un code de decision invalide (1 ou 0 seulement");
 			
 			Proces proces = process.selectOne(idProces);
-			if(proces == null) throw new IFT287Exception("Ce procÃ¨s n'existe pas");			
+			if(proces == null) throw new IFT287Exception("Ce procès n'existe pas");			
 			proces.setComplet(true);
 			proces.setDecision(decision);
 			process.terminerProces(proces);
@@ -226,7 +235,7 @@ public class GestionProces {
 
 	//	â€” afficherProces <idProces>
 	/** 
-	 *  Aï¬ƒche les informations pour un procÃ¨s.
+	 *  Aï¬ƒche les informations pour un procès.
 	 *  
 	 * @param idProces
 	 * @param cx 
@@ -248,8 +257,12 @@ public class GestionProces {
 		}
 	}
 
-	public ArrayList<Proces> getProces() throws SQLException {		
+	public ArrayList<Proces> getProces() throws SQLException, IFT287Exception {		
 		return process.getProces();
+	}
+	
+	public Proces getProces(int id) throws SQLException, IFT287Exception {		
+		return process.selectOne(id);
 	}
 	
 	public ArrayList<Seance> getSeances(int idProces) throws SQLException {

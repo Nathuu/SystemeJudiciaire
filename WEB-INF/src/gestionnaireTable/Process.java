@@ -63,10 +63,8 @@ public class Process {
 		s.setInt(1, proces.getId());
 		s.setInt(2, proces.getJuge().getId());
 		s.setDate(3, proces.getDebut());
-		if(!proces.getJurys().isEmpty())
-			s.setBoolean(4, true);
-		else
-			s.setBoolean(4, false);
+		s.setBoolean(4, proces.isDevantJury());
+
 		s.setInt(5, proces.getPoursuite().getId());
 		s.setInt(6, proces.getDefense().getId());
 

@@ -11,6 +11,7 @@
 </head>
 <body>
 	<jsp:include page="/WEB-INF/header.jsp" />	
+	<jsp:include page="/WEB-INF/messageErreur.jsp" />
 	<div id="main-panel">
 		<h1>Juges</h1>
 		<div>
@@ -18,8 +19,7 @@
 		</div>
 		<div>
 			<jsp:include page="/WEB-INF/Components/frmJuge.jsp" />
-		</div>		
-		<jsp:include page="/WEB-INF/messageErreur.jsp" />
+		</div>
 		<jsp:include page="/WEB-INF/footer.jsp" />
 	</div>
 </body>

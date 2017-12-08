@@ -40,7 +40,7 @@ public class GestionJury {
 			
 			Jury jury = new Jury(nas, prenom, nom, age, true, sexe); 	
 			
-			if (jurys.exist(jury)) throw new IFT287Exception("Un jury avec ce NAS existe déjà ");
+			if (jurys.exist(jury)) throw new IFT287Exception("Un jury avec ce NAS existe déjà ");			
 			
 			jurys.inscrireJury(jury);
 				
@@ -77,6 +77,14 @@ public class GestionJury {
 
 	public ArrayList<Jury> getJurys() throws SQLException {		
 		return jurys.getJurys();
+	}
+	
+	public ArrayList<Jury> getJurysDisponible() throws SQLException {		
+		return jurys.getJurysDisponible();
+	}
+
+	public ArrayList<Jury> getJurys(int idProces) throws SQLException {
+		return jurys.getJurys(idProces);
 	}
     
 

@@ -2,7 +2,7 @@
 
 </style>
 
-<form action="Juges" method="get">
+<form action="Juges" method="post">
 	<div class="panel">
 		<legend>Ajouter une juge</legend>
 		<div class="row">

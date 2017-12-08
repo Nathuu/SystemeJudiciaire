@@ -9,32 +9,32 @@
 	<%@ include file="/WEB-INF/css/style.css" %>
 </style>
 </head>
-<jsp:include page="/WEB-INF/header.jsp" />
+
 <body>
+	<jsp:include page="/WEB-INF/header.jsp" />
+	<jsp:include page="/WEB-INF/messageErreur.jsp" />
 	<div id="main-panel">
-		<div  class="container-inline">
-		
-		 <!-- Remplacer par lstProces lorsque crée -->
-			<div style="float: left">
-				<jsp:include page="/WEB-INF/Components/lstProces.jsp" />
-			</div>
-			<div>
-				<jsp:include page="/WEB-INF/Components/lstSeance.jsp" />
-			</div>
-			<div>
-				<jsp:include page="/WEB-INF/Components/lstJury.jsp" />
-			</div>
+		<div>
+			<jsp:include page="/WEB-INF/Components/lstProces.jsp" />
 		</div>
 		<div  class="container-inline">
 			<div>
 				<jsp:include page="/WEB-INF/Components/frmProces.jsp" />
 			</div>
-	
-			<div>
-				<jsp:include page="/WEB-INF/Components/frmSeance.jsp" />
-			</div>
 		</div>	
-		<jsp:include page="/WEB-INF/messageErreur.jsp" />
+		<div  class="container-inline">
+			<div>
+				<div>
+					<jsp:include page="/WEB-INF/Components/lstSeance.jsp" />
+				</div>
+				<div>
+					<jsp:include page="/WEB-INF/Components/frmSeance.jsp" />
+				</div>
+				<div>
+					<jsp:include page="/WEB-INF/Components/lstJury.jsp" />
+				</div>
+			</div>
+		</div>		
 		<jsp:include page="/WEB-INF/footer.jsp" />
 	</div>
 

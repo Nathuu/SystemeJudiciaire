@@ -23,7 +23,7 @@
 				<td>${juge.age}</td>
 				<td>${juge.actif}</td>
 				<td>
-					<form action="Juges" method="get">
+					<form action="Juges" method="post">
 						<input class="btn_black" type="submit" value="Retirer" />
 						<input type="hidden" name="removeJuge" value="${juge.id}">
 					</form>

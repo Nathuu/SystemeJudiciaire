@@ -1,6 +1,6 @@
 
 
-<form action="Jurys" method="get">
+<form action="Jurys" method="post">
 	<div class="panel">
 		<legend>Ajouter un Jury</legend>
 	

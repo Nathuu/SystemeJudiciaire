@@ -100,20 +100,18 @@ public class Jurys {
 
 	public ArrayList<Jury> selectAllByProces(int idProces) throws SQLException {
 		PreparedStatement s =  cx.getConnection().prepareStatement(""
-				+ "SELECT j.nas, j.prenom, j.nom, j.age, j.actif, j.id_sexe, s.nom "
+				+ "SELECT j.nas, j.prenom, j.nom, j.age, j.actif, j.id_sexe "
 				+ "FROM jury AS j "	
-				+ "INNER JOIN proces_jury AS pj ON j.nas = pj.id_jury "
-				+ "INNER JOIN proces AS p ON pj.id_proces = p.id "
-				+ "INNER JOIN sexe AS s ON s.id = j.id_sexe "					
+				+ "LEFT JOIN proces_jury AS pj ON j.nas = pj.id_jury "
+				+ "LEFT JOIN proces AS p ON pj.id_proces = p.id "	
 				+ "WHERE p.id = ?");
 		
 		s.setInt(1, idProces);		
-		ResultSet r = s.executeQuery();
-		
+		ResultSet r = s.executeQuery();	
 		ArrayList<Jury> jurys = new ArrayList<Jury>();
 		
 		while(r.next()) {
-			jurys.add(new Jury(r.getInt("j.nas"), r.getString("j.prenom"), r.getString("j.nom"), r.getInt("j.age"), r.getBoolean("j.actif"), r.getString("s.nom").charAt(0) ));
+			jurys.add(new Jury(r.getInt(1), r.getString(2), r.getString(3), r.getInt(4), r.getBoolean(5), r.getString(6).charAt(0) ));
 		}
 		
 		return jurys;
@@ -145,6 +143,37 @@ public class Jurys {
 		}
 		
 		return lstJury;
+	}
+
+	public ArrayList<Jury> getJurysDisponible() throws SQLException {
+		PreparedStatement s =  cx.getConnection().prepareStatement("SELECT * FROM jury WHERE actif = true");
+		ResultSet r = s.executeQuery();	
+		
+		ArrayList<Jury> lstJury = new ArrayList<Jury>();
+		while (r.next()) {
+			lstJury.add(new Jury(r.getInt(1), r.getString(2), r.getString(3), r.getInt(4), r.getBoolean(5), r.getString(6).charAt(0)));
+		}
+		
+		return lstJury;
+	}
+
+	public ArrayList<Jury> getJurys(int idProces) throws SQLException {
+		PreparedStatement s =  cx.getConnection().prepareStatement(""
+				+ "SELECT j.nas, j.prenom, j.nom, j.age, j.actif, s.nom "
+				+ "FROM jury AS j "
+				+ "INNER JOIN sexe AS s ON j.id_sexe = s.id "				
+				+ "INNER JOIN proces_jury AS pj ON pj.id_Jury = j.nas "				
+				+ "WHERE pj.id_proces = ? ");
+		s.setInt(1, idProces);
+		
+		ResultSet r = s.executeQuery();		
+		ArrayList<Jury> lstJury = new ArrayList<Jury>();
+		while (r.next()) {
+			lstJury.add(new Jury(r.getInt(1), r.getString(2), r.getString(3), r.getInt(4), r.getBoolean(5), r.getString(6).charAt(0)));
+		}
+		
+		return lstJury;
+		
 	}
 
 

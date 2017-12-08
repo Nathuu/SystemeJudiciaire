@@ -1,7 +1,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page isELIgnored="false" %> 
 
-<form action="Parties" method="get">
+<form action="Parties" method="post">
 	<div class="panel">
 			<p>Ajouter un partie</p>
 		<div class="row">

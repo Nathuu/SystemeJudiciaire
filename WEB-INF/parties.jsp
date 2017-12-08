@@ -9,10 +9,12 @@
  	<%@ include file="/WEB-INF/css/style.css" %>
 </style>
 </head>
-<jsp:include page="/WEB-INF/header.jsp" />
+
 <body>
+	<jsp:include page="/WEB-INF/header.jsp" />
+	<jsp:include page="/WEB-INF/messageErreur.jsp" />
 	<div id="main-panel">
-		<div  class="container-inline">
+		<div class="container-inline">
 			<div style="float: left">
 				<jsp:include page="/WEB-INF/Components/lstAvocat.jsp" />
 			</div>
@@ -23,7 +25,6 @@
 		<div>
 			<jsp:include page="/WEB-INF/Components/frmPartie.jsp" />
 		</div>
-		<jsp:include page="/WEB-INF/messageErreur.jsp" />
 		<jsp:include page="/WEB-INF/footer.jsp" />
 	</div>
 

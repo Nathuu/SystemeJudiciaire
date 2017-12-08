@@ -25,7 +25,7 @@ public class GestionJuge {
 	/**
 	 *  Permet d’ajouter un juge au système.
 	 *  
-	 * @param idJuge		l'id souhaité du juge
+	 * @param idJuge		l'id souhait� du juge
 	 * @param prenom		le prenom du juge 
 	 * @param nom			le nom du juge
 	 * @param age			l'age du juge

@@ -1,6 +1,9 @@
 package judiciaireServlet;
 
 import java.io.IOException;
+import java.sql.SQLException;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -9,55 +12,57 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import general.IFT287Exception;
+import gestionnaireTransaction.GestionJudiciaire;
+
 public class TableauDeBord extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-//		try {
+		try {
 			// verification de l'état de la session
 			HttpSession session = request.getSession();
 			Integer etat = (Integer) session.getAttribute("etat");
 			if (etat == null) {
 				RequestDispatcher dispatcher = request.getRequestDispatcher("/login.jsp");
 				dispatcher.forward(request, response);
-			} else {
-				//session.setAttribute("idMembre", null);
+			} else {				
 				session.setAttribute("etat", new Integer(JudiciaireConstantes.CONNECTE));
-				// lecture des paramètres du formulaire selectionMembre.jsp
-				//String idMembreParam = request.getParameter("idMembre");
-				//request.setAttribute("idMembre", idMembreParam);
-				// conversion du parametre idMembre en entier
-				//int idMembre = -1; // inialisation requise par compilateur Java
-//				try {
-//					idMembre = Integer.parseInt(idMembreParam);
-//					// enregistrer dans la session le paramètre idMembre
-//					// cette valeur sera utilisée dans listePretMembre.jsp
-//					session.setAttribute("idMembre", idMembreParam);
-//				} catch (NumberFormatException e) {
-//					throw new BiblioException("Format de no Membre " + idMembreParam + " incorrect.");
-//				}
+				GestionJudiciaire gJudiciaireR = (GestionJudiciaire) session.getAttribute("gJudiciaireR");
+				GestionJudiciaire gJudiciaireW = (GestionJudiciaire) session.getAttribute("gJudiciaireW");				
+				request.setAttribute("lstProces", gJudiciaireR.getGestionProces().getProces());
 
-//				// vérifier existence du membre
-//				GestionBibliotheque biblioInterrogation = (GestionBibliotheque) session
-//						.getAttribute("biblioInterrogation");
-//				if (!biblioInterrogation.getGestionMembre().existe(idMembre))
-//					throw new BiblioException("Membre " + idMembre + " inexistant.");
-
-				// transfert de la requête à la page JSP pour affichage
+				request.setAttribute("multiple", false);
+				
+				if (request.getParameter("IDproces") != null) {
+					try {
+						int idProces = Integer.parseInt(request.getParameter("IDproces"));
+						request.setAttribute("lstJuryProces", gJudiciaireR.getGestionJury().getJurys(idProces));
+						request.setAttribute("lstPartiDefense", gJudiciaireR.getGestionProces().getProces(idProces).getDefense());
+						request.setAttribute("lstPartiPoursuite", gJudiciaireR.getGestionProces().getProces(idProces).getPoursuite());
+						request.setAttribute("procesUnique", gJudiciaireR.getGestionProces().getProces(idProces));
+						request.setAttribute("lstSeance", gJudiciaireR.getGestionProces().getSeances(idProces));
+						request.setAttribute("selectedProces", idProces);
+					} catch (NumberFormatException e) {
+						throw new IFT287Exception("Format de id proces incorrect");
+					}
+				}
+				
 				RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/tableauDeBord.jsp");
 				dispatcher.forward(request, response);
 				session.setAttribute("etat", new Integer(JudiciaireConstantes.MEMBRE_SELECTIONNE));
 			}
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.toString());
-//		} catch (BiblioException e) {
-//			List<String> listeMessageErreur = new LinkedList<String>();
-//			listeMessageErreur.add(e.toString());
-//			request.setAttribute("listeMessageErreur", listeMessageErreur);
-//			RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/selectionMembre.jsp");
-//			dispatcher.forward(request, response);
-//		}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.toString());
+		}	 
+		catch (IFT287Exception e) {
+			List<String> listeMessageErreur = new LinkedList<String>();
+			listeMessageErreur.add(e.toString());
+			request.setAttribute("listeMessageErreur", listeMessageErreur);
+			RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/selectionMembre.jsp");
+			dispatcher.forward(request, response);
+		}
 	}
 
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

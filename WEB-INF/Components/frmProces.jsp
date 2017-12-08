@@ -1,7 +1,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page isELIgnored="false" %> 
 <!-- action=Proces pour servletProces et method get pour le doGet? -->
-<form action="Proces" method="get">
+<form action="Proces" method="post">
 	<div class="panel">
 		<legend>Ajouter un Proces</legend>
 		<div class="row">

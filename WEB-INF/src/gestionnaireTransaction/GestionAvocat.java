@@ -22,12 +22,12 @@ public  class GestionAvocat {
 	
 	//	— 	ajouterAvocat <idAvocat> <prenom> <nom> <type> 
 	/**
-	 * Permet d’ajouter un avocat pour représenter un client. Le type peut ˆetre 0 pour un avocat privé, 1 pour un avocat du directeur des poursuites criminelles et pénales.
+	 * Permet d’ajouter un avocat pour repr�senter un client. Le type peut ˆetre 0 pour un avocat priv�, 1 pour un avocat du directeur des poursuites criminelles et p�nales.
 	 *     
 	 * @param idAvocat			l'id de l'Avocat 
 	 * @param prenom			le prenom de l'avocat 
 	 * @param nom				le nom de l'avocat
-	 * @param type				0 pour un avocat privé, 1 pour un avocat du directeur des poursuites criminelles/pénales
+	 * @param type				0 pour un avocat priv�, 1 pour un avocat du directeur des poursuites criminelles/p�nales
 	 * @param cx 
 	 * @throws SQLException
 	 * @throws IFT287Exception
@@ -40,7 +40,7 @@ public  class GestionAvocat {
 						
 			Avocat avocat = new Avocat(idAvocat, prenom, nom, "", type);
 			
-			if(avocats.exist(avocat)) throw new IFT287Exception("L'avocat existe déjà");
+			if(avocats.exist(avocat)) throw new IFT287Exception("L'avocat existe d�jà");
 			
 			avocats.ajouterAvocat(avocat);
 			cx.getConnection().commit();

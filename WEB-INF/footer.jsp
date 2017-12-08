@@ -3,7 +3,7 @@
 	contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
 <style>
-div#footer {	
+footer#footer {	
 	width: 100%;
 	display: inline-block;
 	background-color: #000;
@@ -11,12 +11,13 @@ div#footer {
 	position: absolute;
 }
 
-div#footer p {
+footer#footer p {
 	color: white;
 	padding-left: 10px;
 }
 </style>
 
-<div id="footer">
+<footer id="footer">
 	<p>©Tous droits réservés Judicieux Inc 2017</p>
-</div>
+	<p>Marc dupuis 08 387 435 Francis Vachon 170 22 124</p>
+</footer>
